@@ -1,4 +1,4 @@
-// To see quickly what quarter a month belongs to
+// To see quickly what quarter a month belongs to and its position within the quarter
 import Foundation
 
 enum Month: Int, CaseIterable {
@@ -25,18 +25,29 @@ enum Month: Int, CaseIterable {
     }
 }
 
+
+
 enum Quarter: String {
-    case Q1 = "Q1"
-    case Q2 = "Q2"
-    case Q3 = "Q3"
-    case Q4 = "Q4"
+    case q1 = "q1"
+    case q2 = "q2"
+    case q3 = "q3"
+    case q4 = "q4"
     
-    static func from(month: Month) -> Quarter {
+    // Updated to return both quarter and position within the quarter
+    static func from(month: Month) -> (quarter: Quarter, position: String) {
         switch month {
-        case .january, .february, .march: return .Q1
-        case .april, .may, .june: return .Q2
-        case .july, .august, .september: return .Q3
-        case .october, .november, .december: return .Q4
+        case .january: return (.q1, "beginning")
+        case .february: return (.q1, "middle")
+        case .march: return (.q1, "ending")
+        case .april: return (.q2, "beginning")
+        case .may: return (.q2, "middle")
+        case .june: return (.q2, "ending")
+        case .july: return (.q3, "beginning")
+        case .august: return (.q3, "middle")
+        case .september: return (.q3, "ending")
+        case .october: return (.q4, "beginning")
+        case .november: return (.q4, "middle")
+        case .december: return (.q4, "ending")
         }
     }
 }
@@ -53,13 +64,15 @@ func whichQuarter(_ input: Any) -> String {
     }
     
     if let month = month {
-        return Quarter.from(month: month).rawValue
+        let (quarter, position) = Quarter.from(month: month)
+        return "\(month): \(quarter.rawValue), \(position)"
     } else {
         return "Invalid month input."
     }
 }
 
 func main() {
+    print("")
     let args = CommandLine.arguments
     
     guard args.count > 1 else {
@@ -69,12 +82,12 @@ func main() {
     
     let input = args[1]
     
-    // Try to interpret input as an integer, else treat it as a string
     if let monthNumber = Int(input) {
         print(whichQuarter(monthNumber))
     } else {
         print(whichQuarter(input))
     }
+    print("")
 }
 
 main()
