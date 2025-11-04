@@ -5,10 +5,20 @@ import PackageDescription
 
 let package = Package(
     name: "which-quarter",
+    platforms: [
+        .macOS(.v15)
+    ],
+    dependencies: [
+        // .package(url: "https://github.com/apple/swift-argument-parser.git", branch: "main"),
+        .package(url: "https://github.com/leviouwendijk/plate.git", branch: "master"),
+    ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .executableTarget(
-            name: "q"),
+            name: "q",
+            dependencies: [
+                // .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "plate", package: "plate"),
+            ]
+        ),
     ]
 )

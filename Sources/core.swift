@@ -1,5 +1,5 @@
-// To see quickly what quarter a month belongs to and its position within the quarter
 import Foundation
+import plate
 
 enum IndexingError: Error, LocalizedError {
     case invalidNumeral
@@ -21,7 +21,6 @@ enum IndexingError: Error, LocalizedError {
     }
 }
 
-// enum Month: Int, CaseIterable {
 enum Month: String, RawRepresentable, CaseIterable {
     // case january = 1
     case january
@@ -131,6 +130,23 @@ enum Month: String, RawRepresentable, CaseIterable {
     }
 
     var cased: String { return self.rawValue.capitalized }
+
+    var int: Int {
+        switch self {
+        case .january: return 1
+        case .february: return 2
+        case .march: return 3
+        case .april: return 4
+        case .may: return 5
+        case .june: return 6
+        case .july: return 7
+        case .august: return 8
+        case .september: return 9
+        case .october: return 10
+        case .november: return 11
+        case .december: return 12
+        }
+    }
 }
 
 enum QuarterOrderPosition: String, RawRepresentable, CaseIterable {
@@ -173,12 +189,34 @@ struct OrderedQuarter {
         }
     }
 
-    var printable: String {
-        return """
-            \(QuarterOrderPosition.leading.rawValue): \(leading.cased)
-            \(QuarterOrderPosition.middle.rawValue): \(middle.cased)
-            \(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)
-        """
+    func printable(highlighting month: Month? = nil) -> String {
+        var res = ""
+
+        if leading == month {
+            res.append("\(QuarterOrderPosition.leading.rawValue): \(leading.cased)".ansi(.bold, .yellow))
+        } else {
+            res.append("\(QuarterOrderPosition.leading.rawValue): \(leading.cased)")
+        }
+
+        res.append("\n")
+
+        if middle == month {
+            res.append("\(QuarterOrderPosition.middle.rawValue): \(middle.cased)".ansi(.bold, .yellow))
+        } else {
+            res.append("\(QuarterOrderPosition.middle.rawValue): \(middle.cased)")
+        }
+
+        res.append("\n")
+
+        if trailing == month {
+            res.append("\(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)".ansi(.bold, .yellow))
+        } else {
+            res.append("\(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)")
+        }
+
+        res.append("\n")
+
+        return res
     }
 }
 
@@ -187,6 +225,25 @@ enum Quarter: String, RawRepresentable, CaseIterable {
     case q2 = "q2"
     case q3 = "q3"
     case q4 = "q4"
+
+    var int: Int { 
+        switch self {
+        case .q1: return 1
+        case .q2: return 2
+        case .q3: return 3
+        case .q4: return 4
+        }
+    }
+
+    func short(capitalized: Bool = true) -> String { 
+        let label = capitalized ? "Q" : "q"
+        return label + String(self.int)
+    }
+
+    func named(capitalized: Bool = true) -> String { 
+        let label = capitalized ? "Quarter" : "quarter"
+        return label + " " + String(self.int)
+    }
 
     static var ordered: [Quarter: OrderedQuarter] {
         return [
@@ -231,76 +288,18 @@ enum Quarter: String, RawRepresentable, CaseIterable {
 
         throw IndexingError.quarterMissingInDictionary(self)
     }
-    
-    // static func from(month: Month) -> (quarter: Quarter, position: String) {
-    //     switch month {
-    //     case .january: return (.q1, "beginning")
-    //     case .february: return (.q1, "middle")
-    //     case .march: return (.q1, "ending")
-    //     case .april: return (.q2, "beginning")
-    //     case .may: return (.q2, "middle")
-    //     case .june: return (.q2, "ending")
-    //     case .july: return (.q3, "beginning")
-    //     case .august: return (.q3, "middle")
-    //     case .september: return (.q3, "ending")
-    //     case .october: return (.q4, "beginning")
-    //     case .november: return (.q4, "middle")
-    //     case .december: return (.q4, "ending")
-    //     }
-    // }
-    
-    // func monthsInQuarter() -> String {
-    //     let monthsAndPositions: [(Int, String, String)] = {
-    //         switch self {
-    //         case .q1: return [
-    //             (1,
-    //             "January",
-    //             "beginning"),
-    //             (2,
-    //             "February",
-    //             "middle"),
-    //             (3,
-    //             "March",
-    //             "ending")
-    //         ]
-    //         case .q2: return [
-    //             (4,
-    //             "April",
-    //             "beginning"),
-    //             (5,
-    //             "May",
-    //             "middle"),
-    //             (6,
-    //             "June",
-    //             "ending")
-    //         ]
-    //         case .q3: return [
-    //             (7,
-    //             "July",
-    //             "beginning"),
-    //             (8,
-    //             "August",
-    //             "middle"),
-    //             (9,
-    //             "September",
-    //             "ending")
-    //         ]
-    //         case .q4: return [
-    //             (10,
-    //             "October",
-    //             "beginning"),
-    //             (11,
-    //             "November",
-    //             "middle"),
-    //             (12,
-    //             "December",
-    //             "ending")
-    //         ]
-    //         }
-    //     }()
-        
-    //     return monthsAndPositions.map { "\($0.0) : \($0.1.lowercased()) -- \($0.2)" }.joined(separator: "\n")
-    // }
+
+    static func printable(highlighting month: Month? = nil) throws -> String {
+        var res = ""
+        for q in Self.allCases {
+            res.append(q.named(capitalized: true))
+            res.append("\n\n")
+            let wholeQ = try q.see().printable(highlighting: month)
+            res.append(wholeQ.indent())
+            res.append("\n")
+        }
+        return res
+    }
 }
 
 func whichQuarter(_ input: Any) throws -> String {
@@ -310,7 +309,7 @@ func whichQuarter(_ input: Any) throws -> String {
         month = try Month(from: monthNumber)
     } else if let monthName = input as? String {
         if let quarter = Quarter(rawValue: monthName.lowercased()) {
-            let ordered = try quarter.see().printable
+            let ordered = try quarter.see().printable()
             let output = """
             \(quarter.rawValue): 
 
@@ -325,15 +324,28 @@ func whichQuarter(_ input: Any) throws -> String {
     }
     
     if let month = month {
+        var res = ""
         let (quarter, position) = month.quarter_position
-        return "\(month): \(quarter.rawValue), \(position.printable)"
+        // let wholeQ = try quarter.see().printable(highlighting: month)
+        let wholeY = try Quarter.printable(highlighting: month)
+        res.append("Month: ")
+        res.append("\(month.int)".ansi(.bold))
+        res.append("\n")
+        res.append("Name: ")
+        res.append("\(month.cased)".ansi(.bold))
+        res.append("\n")
+        res.append("Quarter: \(quarter.short()), at position: \(position.printable)")
+        res.append("\n\n")
+        // res.append(wholeQ.indent())
+        res.append(wholeY)
+        return res
     } else {
         return "Invalid month input."
     }
 }
 
 func entry() throws {
-    print("")
+    // print("")
     let args = CommandLine.arguments
     
     guard args.count > 1 else {
@@ -343,8 +355,6 @@ func entry() throws {
     
     let input = args[1]
 
-    // let result = try whichQuarter(input)
-    // print(result)
     if let monthNumber = Int(input) {
         let res = try whichQuarter(monthNumber)
         print(res)
@@ -352,5 +362,5 @@ func entry() throws {
         let res = try whichQuarter(input)
         print(res)
     }
-    print("")
+    // print("")
 }
