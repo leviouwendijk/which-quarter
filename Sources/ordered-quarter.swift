@@ -1,0 +1,56 @@
+import Foundation
+import plate
+
+struct OrderedQuarter {
+    let leading: Month
+    let middle: Month
+    let trailing: Month
+    
+    init(
+        _ leading: Month,
+        _ middle: Month,
+        _ trailing: Month
+    ) {
+        self.leading = leading
+        self.middle = middle
+        self.trailing = trailing
+    }
+
+    func month(for position: QuarterOrderPosition) -> Month {
+        switch position {
+        case .leading: return self.leading
+        case .middle: return self.middle
+        case .trailing: return self.trailing
+        }
+    }
+
+    func printable(highlighting month: Month? = nil) -> String {
+        var res = ""
+
+        if leading == month {
+            res.append("\(QuarterOrderPosition.leading.rawValue): \(leading.cased)".ansi(.bold, .yellow))
+        } else {
+            res.append("\(QuarterOrderPosition.leading.rawValue): \(leading.cased)")
+        }
+
+        res.append("\n")
+
+        if middle == month {
+            res.append("\(QuarterOrderPosition.middle.rawValue): \(middle.cased)".ansi(.bold, .yellow))
+        } else {
+            res.append("\(QuarterOrderPosition.middle.rawValue): \(middle.cased)")
+        }
+
+        res.append("\n")
+
+        if trailing == month {
+            res.append("\(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)".ansi(.bold, .yellow))
+        } else {
+            res.append("\(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)")
+        }
+
+        res.append("\n")
+
+        return res
+    }
+}
