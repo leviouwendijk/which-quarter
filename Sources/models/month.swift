@@ -174,11 +174,16 @@ enum Month: String, RawRepresentable, CaseIterable {
         res.append("\n")
 
         res.append("Name: ")
-        res.append("\(self.cased)".ansi(.bold))
+        res.append("\(self.cased)".ansi(.bold, .yellow))
         res.append("\n")
 
         res.append("Quarter: \(quarter.short()), at position: \(position.printable)")
         res.append("\n")
+
+        res.append("\n")
+
+        // res.append(wholeQ.indent())
+        res.append(wholeY)
 
         res.append("\n")
 
@@ -203,11 +208,6 @@ enum Month: String, RawRepresentable, CaseIterable {
             res.append(" (same quarter)")
         }
         res.append("\n")
-
-        res.append("\n")
-
-        // res.append(wholeQ.indent())
-        res.append(wholeY)
         return res
     }
 }

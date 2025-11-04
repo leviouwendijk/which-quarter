@@ -25,9 +25,9 @@ struct OrderedQuarter {
     }
 
     func printable(highlighting month: Month? = nil) -> String {
-        var leading_str = leading.int.string() + " " + QuarterOrderPosition.leading.rawValue + ": " + leading.cased
-        var middle_str = middle.int.string() + " " + QuarterOrderPosition.middle.rawValue + ": " + middle.cased
-        var trailing_str = trailing.int.string() + " " + QuarterOrderPosition.trailing.rawValue + ": " + trailing.cased
+        var leading_str = leading.int.string() + ". " + QuarterOrderPosition.leading.rawValue + ": " + leading.cased
+        var middle_str = middle.int.string() + ". " + QuarterOrderPosition.middle.rawValue + ": " + middle.cased
+        var trailing_str = trailing.int.string() + ". " + QuarterOrderPosition.trailing.rawValue + ": " + trailing.cased
 
         func ansify(_ s: String) -> String {
             return s.ansi(.bold, .yellow)
@@ -49,32 +49,7 @@ struct OrderedQuarter {
 
         let strings = [leading_str, middle_str, trailing_str]
         var res = strings.joined(separator: "\n")
-
-        // if leading == month {
-        //     res.append("\(QuarterOrderPosition.leading.rawValue): \(leading.cased)".ansi(.bold, .yellow))
-        // } else {
-        //     res.append("\(QuarterOrderPosition.leading.rawValue): \(leading.cased)")
-        // }
-
-        // res.append("\n")
-
-        // if middle == month {
-        //     res.append("\(QuarterOrderPosition.middle.rawValue): \(middle.cased)".ansi(.bold, .yellow))
-        // } else {
-        //     res.append("\(QuarterOrderPosition.middle.rawValue): \(middle.cased)")
-        // }
-
-        // res.append("\n")
-
-        // if trailing == month {
-        //     res.append("\(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)".ansi(.bold, .yellow))
-        // } else {
-        //     res.append("\(QuarterOrderPosition.trailing.rawValue): \(trailing.cased)")
-        // }
-
-        // res.append("\n")
         res.append("\n")
-
         return res
     }
 }
