@@ -126,19 +126,86 @@ enum Month: String, RawRepresentable, CaseIterable {
         }
     }
 
+    func previous() throws -> Self {
+        var i = self.int
+        if i < 1, i > 12 {
+            throw IndexingError.invalidNumeral
+        } else if i == 1 {
+            i = 12
+        } else {
+            i -= 1
+        }
+
+        return try Self(from: i)
+    }
+
+    func next() throws -> Self {
+        var i = self.int
+        if i < 1, i > 12 {
+            throw IndexingError.invalidNumeral
+        } else if i == 12 {
+            i = 1
+        } else {
+            i += 1
+        }
+
+        return try Self(from: i)
+    }
+
+    enum RelativePosition { case next, previous }
+    func get(_ position: RelativePosition) throws -> Self {
+        switch position {
+        case .next:
+            return try self.next()
+        case .previous:
+            return try self.previous()
+        }
+    }
+
     func printable() throws -> String {
         var res = ""
         let (quarter, position) = self.quarter_position
         // let wholeQ = try quarter.see().printable(highlighting: self)
         let wholeY = try Quarter.printable(highlighting: self)
+
         res.append("Month: ")
         res.append("\(self.int)".ansi(.bold))
+        res.append(" of 12")
         res.append("\n")
+
         res.append("Name: ")
         res.append("\(self.cased)".ansi(.bold))
         res.append("\n")
+
         res.append("Quarter: \(quarter.short()), at position: \(position.printable)")
-        res.append("\n\n")
+        res.append("\n")
+
+        res.append("\n")
+
+        res.append("Next: ")
+        let next = try self.next()
+        res.append("\(next.cased)".ansi(.bold))
+        res.append(" (\(next.int))")
+        if self.quarter() != next.quarter() {
+            res.append(" (\(next.quarter().named()))")
+        } else {
+            res.append(" (same quarter)")
+        }
+        res.append("\n")
+
+        res.append("Previous: ")
+        let previous = try self.previous()
+        res.append("\(previous.cased)".ansi(.bold))
+        res.append(" (\(previous.int))")
+        if self.quarter() != previous.quarter() {
+            res.append(" (\(previous.quarter().named()))")
+        } else {
+            res.append(" (same quarter)")
+        }
+        res.append("\n")
+
+        res.append("\n")
+
         // res.append(wholeQ.indent())
         res.append(wholeY)
         return res
