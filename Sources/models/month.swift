@@ -125,4 +125,22 @@ enum Month: String, RawRepresentable, CaseIterable {
         case .december: return 12
         }
     }
+
+    func printable() throws -> String {
+        var res = ""
+        let (quarter, position) = self.quarter_position
+        // let wholeQ = try quarter.see().printable(highlighting: self)
+        let wholeY = try Quarter.printable(highlighting: self)
+        res.append("Month: ")
+        res.append("\(self.int)".ansi(.bold))
+        res.append("\n")
+        res.append("Name: ")
+        res.append("\(self.cased)".ansi(.bold))
+        res.append("\n")
+        res.append("Quarter: \(quarter.short()), at position: \(position.printable)")
+        res.append("\n\n")
+        // res.append(wholeQ.indent())
+        res.append(wholeY)
+        return res
+    }
 }

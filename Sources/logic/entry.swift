@@ -5,17 +5,22 @@ func entry() throws {
     let args = CommandLine.arguments
     
     guard args.count > 1 else {
-        print("Please provide a month name, number, or quarter.")
+        print("Provide a month name, number, or quarter.")
         return
     }
     
-    let input = args[1]
+    let arg_1 = args[1]
 
-    if let monthNumber = Int(input) {
-        let res = try whichQuarter(monthNumber)
+    if arg_1.lowercased() == "quarter" {
+        guard args.count > 2 else {
+            throw IndexingError.invalidNumeral
+        }
+        let arg_2 = args[2]
+
+        let res = try provide_quarter(arg_2)
         print(res)
     } else {
-        let res = try whichQuarter(input)
+        let res = try provide_match(arg_1)
         print(res)
     }
 }

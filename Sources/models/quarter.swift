@@ -6,6 +6,21 @@ enum Quarter: String, RawRepresentable, CaseIterable {
     case q3 
     case q4 
 
+    init(from index: Int) throws {
+        guard index > 0, index < 5 else {
+            throw IndexingError.numberNotInRange(index)
+        }
+
+        switch index {
+        case 1: self = .q1
+        case 2: self = .q2
+        case 3: self = .q3
+        case 4: self = .q4
+        default:
+            throw IndexingError.invalidNumeral
+        }
+    }
+
     var int: Int { 
         switch self {
         case .q1: return 1
@@ -69,14 +84,26 @@ enum Quarter: String, RawRepresentable, CaseIterable {
         throw IndexingError.quarterMissingInDictionary(self)
     }
 
+    func printable(highlighting month: Month? = nil) throws -> String {
+        var res = ""
+        res.append(self.named(capitalized: true))
+        res.append("\n\n")
+        let wholeQ = try self.see().printable(highlighting: month)
+        res.append(wholeQ.indent())
+        res.append("\n")
+        return res
+    }
+
     static func printable(highlighting month: Month? = nil) throws -> String {
         var res = ""
         for q in Self.allCases {
-            res.append(q.named(capitalized: true))
-            res.append("\n\n")
-            let wholeQ = try q.see().printable(highlighting: month)
-            res.append(wholeQ.indent())
-            res.append("\n")
+            let str = try q.printable(highlighting: month)
+            res.append(str)
+            // res.append(q.named(capitalized: true))
+            // res.append("\n\n")
+            // let wholeQ = try q.see().printable(highlighting: month)
+            // res.append(wholeQ.indent())
+            // res.append("\n")
         }
         return res
     }
