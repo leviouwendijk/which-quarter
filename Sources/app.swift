@@ -1,5 +1,5 @@
 @main 
-struct whichQuarterApp {
+struct WhichQuarterApp {
     static func main() {
         do {
             try entry()
