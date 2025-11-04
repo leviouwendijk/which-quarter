@@ -1,5 +1,4 @@
 import Foundation
-import plate
 
 enum Month: String, RawRepresentable, CaseIterable {
     case january
