@@ -1,5 +1,4 @@
 import Foundation
-import plate
 
 func provide_quarter(_ input: String) throws -> String {
     print("Trying quarter..")
@@ -19,6 +18,5 @@ func provide_quarter(_ input: String) throws -> String {
         }
     } 
 
-    // return "Invalid input. Enter a valid month name, number, or quarter."
-    throw IndexingError.invalidName(String(describing: input))
+    throw IndexingError.invalidName(input)
 }
