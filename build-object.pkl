@@ -1,0 +1,19 @@
+uuid = "326C1AB6-62F9-4AC7-BCFE-9F5276A3A940"
+name = "which-quarter"
+types {
+    "binary"
+}
+versions {
+    release {
+        major = 0
+        minor = 1
+        patch = 0
+    }
+}
+compile {
+    use = false
+    arguments {  }
+}
+details = ""
+author = "leviouwendijk"
+update = "https://raw.githubusercontent.com/leviouwendijk/which-quarter/master/build-object.pkl"
