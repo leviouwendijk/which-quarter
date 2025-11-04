@@ -1,5 +1,5 @@
 import Foundation
-// import plate
+import plate
 
 func entry() throws {
     let args = CommandLine.arguments
@@ -11,7 +11,10 @@ func entry() throws {
     
     let arg_1 = args[1]
 
-    if arg_1.lowercased() == "quarter" {
+    if simpleMatch(
+        in: arg_1.lowercased(), 
+        identifiers: ["quarter", "q"]
+    ) {
         guard args.count > 2 else {
             throw IndexingError.invalidNumeral
         }
